@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MilkMarket – Product Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --milk-bg: #fffdf8;
+  --milk-accent: #d9b07e;
+  --milk-soft: #fff6eb;
+  --text: #222;
+  --muted: #776b5d;
+  --radius: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--milk-bg);
+  color: var(--text);
+  line-height: 1.5;
+  padding: 16px;
+}
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.logo {
+  font-weight:700;
+  font-size:20px;
+  background:var(--milk-accent);
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+}
+.search {
+  width:100%;
+  margin:10px 0;
+  display:flex;
+  align-items:center;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:8px 12px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.04);
+}
+.search input {
+  border:none;
+  outline:none;
+  flex:1;
+  font-size:15px;
+}
+.catalog {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media(max-width:600px){
+  .catalog{grid-template-columns:1fr;}
+}
+.card {
+  background:var(--milk-soft);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 6px 14px rgba(0,0,0,0.05);
+  transition:transform .2s ease;
+}
+.card:active {transform:scale(0.97);}
+.card img {
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+.card-body {
+  padding:10px 12px;
+}
+.card-body h3 {
+  font-size:16px;
+  margin-bottom:4px;
+}
+.price {
+  color:var(--milk-accent);
+  font-weight:700;
+}
+.desc {
+  font-size:13px;
+  color:var(--muted);
+  margin-top:4px;
+  min-height:36px;
+}
+.btn {
+  margin-top:8px;
+  background:var(--milk-accent);
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:8px 10px;
+  width:100%;
+  font-weight:700;
+  font-size:14px;
+}
+.modal-backdrop {
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  display:none;align-items:center;justify-content:center;z-index:50;
+}
+.modal {
+  background:white;
+  width:90%;
+  max-width:400px;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+}
+.modal img {
+  width:100%;
+  border-radius:10px;
+  height:180px;
+  object-fit:cover;
+}
+.close {
+  position:absolute;top:14px;right:14px;
+  background:none;border:none;color:#444;font-size:20px;cursor:pointer;
+}
+.fade {animation:fade .3s ease forwards;}
+@keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* === Shimmer Placeholder === */
+.skeleton {
+  background: linear-gradient(90deg, #f0ebe1 25%, #fff8f1 37%, #f0ebe1 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-card {
+  background: var(--milk-soft);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+  overflow: hidden;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+.skeleton-img {
+  height: 150px;
+  width: 100%;
+  border-radius: 8px;
+}
+.skeleton-text { height: 12px; width: 80%; }
+.skeleton-price { height: 10px; width: 40%; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MM</div>
+  <h2 style="font-size:18px;">MilkMarket</h2>
+</header>
+
+<div class="search">
+  <input id="q" placeholder="Search products...">
+</div>
+
+<div class="catalog" id="catalog"></div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="backdrop">
+  <div class="modal fade">
+    <button class="close" id="close">×</button>
+    <img id="mdImg" alt="">
+    <h3 id="mdTitle" style="margin-top:10px;"></h3>
+    <p id="mdPrice" style="color:var(--milk-accent);font-weight:700;margin:4px 0;"></p>
+    <p id="mdDesc" style="color:var(--muted);font-size:14px;"></p>
+    <button class="btn" id="whatsapp">Order via WhatsApp</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
+
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const catalog = document.getElementById("catalog");
+const q = document.getElementById("q");
+const backdrop = document.getElementById("backdrop");
+const mdImg = document.getElementById("mdImg");
+const mdTitle = document.getElementById("mdTitle");
+const mdPrice = document.getElementById("mdPrice");
+const mdDesc = document.getElementById("MdDescription");
+const whatsapp = document.getElementById("whatsapp");
+const closeBtn = document.getElementById("close");
+
+let products = [];
+let active = null;
+
+function showSkeleton(){
+  catalog.innerHTML = "";
+  for(let i=0; i<4; i++){
+    catalog.innerHTML += `
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-img"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-price"></div>
+        <div class="skeleton skeleton-text" style="width:60%;"></div>
+      </div>
+    `;
+  }
+}
+
+async function fetchProducts(){
+  showSkeleton();
+  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
+  if(error){
+    console.error(error);
+    catalog.innerHTML = "<p style='color:red;text-align:center;'>Failed to load products.</p>";
+    return;
+  }
+  products = data;
+  render(products);
+}
+fetchProducts();
+
+function render(list){
+  catalog.innerHTML = "";
+  if(list.length === 0){
+    catalog.innerHTML = "<p style='text-align:center;'>No products found.</p>";
+    return;
+  }
+  list.forEach(p=>{
+    const c = document.createElement("div");
+    c.className = "card fade";
+    c.innerHTML = `
+      <img src="${p.img_url}" alt="${p.title}">
+      <div class="card-body">
+        <h3>${p.title}</h3>
+        <div class="price">${p.price}</div>
+        <p class="desc">${p.description}</p>
+        <button class="btn">View</button>
+      </div>`;
+    c.querySelector(".btn").onclick=()=>openModal(p);
+    catalog.appendChild(c);
+  });
+}
+
+function openModal(p){
+  active=p;
+  mdImg.src=p.img_url;
+  mdTitle.textContent=p.title;
+  mdPrice.textContent=p.price;
+  mdDesc.textContent=p.description;
+  backdrop.style.display="flex";
+}
+closeBtn.onclick=()=>backdrop.style.display="none";
+backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
+
+whatsapp.onclick=()=>{
+  if(!active)return;
+  const num="2348012345678"; // Replace with your business number
+  const msg=encodeURIComponent(`Hello! I'm interested in ${active.title} (${active.price}).`);
+  window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
+};
+
+q.oninput=()=>{
+  const val=q.value.toLowerCase();
+  render(products.filter(p=>p.title.toLowerCase().includes(val)));
+};
+</script>
+</body>
+</html>
