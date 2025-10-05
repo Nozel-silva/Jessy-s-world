@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MilkMarket Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{
+  font-family:'Inter',sans-serif;
+  background:#fffdf8;
+  color:#222;
+  margin:0;padding:0;
+  display:flex;flex-direction:column;align-items:center;
+}
+h1{
+  background:#d9b07e;
+  color:#fff;
+  width:100%;
+  text-align:center;
+  padding:20px 0;
+  margin-bottom:20px;
+}
+form{
+  background:#fff;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+  border-radius:10px;
+  padding:20px;
+  max-width:400px;
+  width:90%;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+input,textarea{
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:15px;
+}
+button{
+  background:#d9b07e;
+  border:none;
+  color:white;
+  font-weight:700;
+  padding:12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+button:hover{background:#c69b6a;}
+#list{
+  margin-top:30px;
+  width:90%;
+  max-width:500px;
+}
+.item{
+  background:#fff6eb;
+  padding:10px 15px;
+  margin-bottom:8px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+</style>
+</head>
+<body>
+  <h1>🛠️ MilkMarket Admin</h1>
+  <form id="uploadForm">
+    <input type="text" id="title" placeholder="Product Title" required>
+    <input type="text" id="price" placeholder="Price (₦)" required>
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="url" id="img_url" placeholder="Image URL (https://...)" required>
+    <button type="submit">Upload Product</button>
+  </form>
+
+  <div id="list"></div>
+
+<script>
+const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const form = document.getElementById("uploadForm");
+const list = document.getElementById("list");
+
+form.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const title=document.getElementById("title").value.trim();
+  const price=document.getElementById("price").value.trim();
+  const desc=document.getElementById("description").value.trim();
+  const img_url=document.getElementById("img_url").value.trim();
+
+  if(!title||!price||!desc||!img_url){
+    alert("Please fill in all fields!");
+    return;
+  }
+
+  const { data, error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
+
+  if(error){
+    alert("❌ Upload failed: "+error.message);
+  }else{
+    alert("✅ Product uploaded!");
+    form.reset();
+    fetchProducts();
+  }
+});
+
+async function fetchProducts(){
+  const { data, error } = await supabase.from("products").select("*").order("id", { ascending:false });
+  if(error){console.error(error);return;}
+  list.innerHTML = data.map(p=>`
+    <div class="item">
+      <b>${p.title}</b> – ${p.price}<br>
+      <small>${p.description}</small><br>
+      <img src="${p.img_url}" width="100%" style="margin-top:8px;border-radius:6px;">
+    </div>`).join("");
+}
+fetchProducts();
+</script>
+</body>
+</html>
