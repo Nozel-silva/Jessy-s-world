@@ -62,6 +62,11 @@ button:hover{background:#c69b6a;}
   border-radius:8px;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
+img.preview{
+  width:100%;
+  border-radius:6px;
+  margin-top:8px;
+}
 </style>
 </head>
 <body>
@@ -70,7 +75,8 @@ button:hover{background:#c69b6a;}
     <input type="text" id="title" placeholder="Product Title" required>
     <input type="text" id="price" placeholder="Price (₦)" required>
     <textarea id="description" placeholder="Description" required></textarea>
-    <input type="url" id="img_url" placeholder="Image URL (https://...)" required>
+    <input type="file" id="imgFile" accept="image/*" required>
+    <img id="preview" class="preview" style="display:none;">
     <button type="submit">Upload Product</button>
   </form>
 
@@ -79,37 +85,54 @@ button:hover{background:#c69b6a;}
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
-
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const form = document.getElementById("uploadForm");
 const list = document.getElementById("list");
+const imgFile = document.getElementById("imgFile");
+const preview = document.getElementById("preview");
+
+// Show preview when selecting image
+imgFile.addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(file){
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+});
 
 form.addEventListener("submit", async (e)=>{
   e.preventDefault();
-  const title=document.getElementById("title").value.trim();
-  const price=document.getElementById("price").value.trim();
-  const desc=document.getElementById("description").value.trim();
-  const img_url=document.getElementById("img_url").value.trim();
+  const title = document.getElementById("title").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const desc = document.getElementById("description").value.trim();
+  const file = imgFile.files[0];
 
-  if(!title||!price||!desc||!img_url){
-    alert("Please fill in all fields!");
-    return;
-  }
+  if(!file){alert("Please select an image.");return;}
 
-  const { data, error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
+  // Upload image to Supabase Storage
+  const fileName = Date.now() + "_" + file.name.replace(/\s/g, "_");
+  const { data: imgData, error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
 
-  if(error){
-    alert("❌ Upload failed: "+error.message);
-  }else{
+  if(imgError){alert("❌ Image upload failed: " + imgError.message);return;}
+
+  // Get public URL
+  const { data: publicUrl } = supabase.storage.from("product-images").getPublicUrl(fileName);
+  const img_url = publicUrl.publicUrl;
+
+  // Insert into table
+  const { data, error } = await supabase.from("products").insert([{ title, price, desc, img_url }]);
+  if(error){alert("❌ Upload failed: "+error.message);}
+  else{
     alert("✅ Product uploaded!");
     form.reset();
+    preview.style.display="none";
     fetchProducts();
   }
 });
 
 async function fetchProducts(){
-  const { data, error } = await supabase.from("products").select("*").order("id", { ascending:false });
+  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
   if(error){console.error(error);return;}
   list.innerHTML = data.map(p=>`
     <div class="item">
