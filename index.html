@@ -102,28 +102,37 @@ header {
   width:100%;
   font-weight:700;
   font-size:14px;
+  cursor:pointer;
 }
 .modal-backdrop {
-  position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);
   display:none;align-items:center;justify-content:center;z-index:50;
 }
 .modal {
+  position:relative;
   background:white;
   width:90%;
-  max-width:400px;
-  border-radius:12px;
-  padding:16px;
+  max-width:420px;
+  border-radius:14px;
+  padding:18px;
   box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  animation:fade .3s ease forwards;
 }
 .modal img {
   width:100%;
   border-radius:10px;
-  height:180px;
+  height:240px;
   object-fit:cover;
 }
 .close {
-  position:absolute;top:14px;right:14px;
-  background:none;border:none;color:#444;font-size:20px;cursor:pointer;
+  position:absolute;
+  top:10px;
+  right:14px;
+  background:none;
+  border:none;
+  color:#444;
+  font-size:24px;
+  cursor:pointer;
 }
 .fade {animation:fade .3s ease forwards;}
 @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
@@ -173,20 +182,19 @@ header {
 
 <!-- Modal -->
 <div class="modal-backdrop" id="backdrop">
-  <div class="modal fade">
+  <div class="modal">
     <button class="close" id="close">×</button>
     <img id="mdImg" alt="">
-    <h3 id="mdTitle" style="margin-top:10px;"></h3>
-    <p id="mdPrice" style="color:var(--milk-accent);font-weight:700;margin:4px 0;"></p>
-    <p id="mdDesc" style="color:var(--muted);font-size:14px;"></p>
+    <h3 id="mdTitle" style="margin-top:10px;font-size:18px;"></h3>
+    <p id="mdPrice" style="color:var(--milk-accent);font-weight:700;margin:6px 0;font-size:16px;"></p>
+    <p id="mdDesc" style="color:var(--muted);font-size:14px;margin-bottom:14px;"></p>
     <button class="btn" id="whatsapp">Order via WhatsApp</button>
   </div>
 </div>
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
-
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -196,7 +204,7 @@ const backdrop = document.getElementById("backdrop");
 const mdImg = document.getElementById("mdImg");
 const mdTitle = document.getElementById("mdTitle");
 const mdPrice = document.getElementById("mdPrice");
-const mdDesc = document.getElementById("MdDescription");
+const mdDesc = document.getElementById("mdDesc");
 const whatsapp = document.getElementById("whatsapp");
 const closeBtn = document.getElementById("close");
 
@@ -260,16 +268,19 @@ function openModal(p){
   mdDesc.textContent=p.description;
   backdrop.style.display="flex";
 }
+
 closeBtn.onclick=()=>backdrop.style.display="none";
 backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
 
+// WhatsApp redirect with product name
 whatsapp.onclick=()=>{
-  if(!active)return;
-  const num="2348012345678"; // Replace with your business number
-  const msg=encodeURIComponent(`Hello! I'm interested in ${active.title} (${active.price}).`);
+  if(!active) return;
+  const num="2348012345678"; // Replace with your real number
+  const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from MilkMarket.`);
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
+// Search filter
 q.oninput=()=>{
   const val=q.value.toLowerCase();
   render(products.filter(p=>p.title.toLowerCase().includes(val)));
