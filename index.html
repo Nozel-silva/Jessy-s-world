@@ -22,7 +22,27 @@ body {
   color: var(--text);
   line-height: 1.5;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+/* === Glowing Heading === */
+.glow-title {
+  text-align: center;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--milk-accent);
+  text-shadow: 0 0 12px rgba(217,176,126,0.6);
+  animation: glowFade 2s ease-in-out infinite;
+  margin-bottom: 8px;
+}
+@keyframes glowFade {
+  0%, 100% { opacity: 0; text-shadow: 0 0 0 rgba(217,176,126,0); }
+  50% { opacity: 1; text-shadow: 0 0 14px rgba(217,176,126,0.8); }
+}
+
 header {
   display:flex;
   justify-content:space-between;
@@ -104,6 +124,8 @@ header {
   font-size:14px;
   cursor:pointer;
 }
+
+/* === Modal === */
 .modal-backdrop {
   position:fixed;inset:0;background:rgba(0,0,0,0.6);
   display:none;align-items:center;justify-content:center;z-index:50;
@@ -166,9 +188,26 @@ header {
 }
 .skeleton-text { height: 12px; width: 80%; }
 .skeleton-price { height: 10px; width: 40%; }
+
+/* === Footer === */
+footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 12px 0;
+}
+footer span {
+  color: var(--milk-accent);
+  font-weight: 600;
+}
 </style>
 </head>
 <body>
+
+<!-- Glowing Header -->
+<h1 class="glow-title">LEADING EDGE</h1>
+
 <header>
   <div class="logo">MM</div>
   <h2 style="font-size:18px;">MilkMarket</h2>
@@ -191,6 +230,11 @@ header {
     <button class="btn" id="whatsapp">Order via WhatsApp</button>
   </div>
 </div>
+
+<!-- Footer -->
+<footer>
+  Powered by <span>Leading Edge Virtual Insight (L.E.V.I)</span>
+</footer>
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
@@ -275,7 +319,7 @@ backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
 // WhatsApp redirect with product name
 whatsapp.onclick=()=>{
   if(!active) return;
-  const num="2348012345678"; // Replace with your real number
+  const num="2348012345678"; // replace with your number
   const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from MilkMarket.`);
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
