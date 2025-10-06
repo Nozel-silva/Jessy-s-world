@@ -84,7 +84,7 @@ img.preview{
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const form = document.getElementById("uploadForm");
@@ -105,7 +105,7 @@ form.addEventListener("submit", async (e)=>{
   e.preventDefault();
   const title = document.getElementById("title").value.trim();
   const price = document.getElementById("price").value.trim();
-  const desc = document.getElementById("description").value.trim();
+  const description = document.getElementById("description").value.trim();
   const file = imgFile.files[0];
 
   if(!file){alert("Please select an image.");return;}
@@ -121,7 +121,7 @@ form.addEventListener("submit", async (e)=>{
   const img_url = publicUrl.publicUrl;
 
   // Insert into table
-  const { data, error } = await supabase.from("products").insert([{ title, price, desc, img_url }]);
+  const { data, error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
   if(error){alert("❌ Upload failed: "+error.message);}
   else{
     alert("✅ Product uploaded!");
