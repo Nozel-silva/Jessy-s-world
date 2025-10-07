@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{
+body {
   font-family:'Inter',sans-serif;
   background:#fffdf8;
   color:#222;
@@ -17,7 +17,7 @@ body{
   flex-direction:column;
   align-items:center;
 }
-h1{
+h1 {
   background:#d9b07e;
   color:#fff;
   width:100%;
@@ -26,7 +26,7 @@ h1{
   margin-bottom:10px;
 }
 
-/* Free plan notice styling */
+/* Free plan notice */
 .notice {
   background:#fff3e0;
   border-left:5px solid #d9b07e;
@@ -44,11 +44,9 @@ h1{
   font-weight:600;
   text-decoration:none;
 }
-.notice a:hover {
-  text-decoration:underline;
-}
+.notice a:hover { text-decoration:underline; }
 
-form{
+form {
   background:#fff;
   box-shadow:0 4px 15px rgba(0,0,0,0.08);
   border-radius:10px;
@@ -59,63 +57,97 @@ form{
   flex-direction:column;
   gap:12px;
 }
-input,textarea{
+input, textarea {
   width:100%;
   padding:10px;
   border:1px solid #ccc;
   border-radius:6px;
   font-size:15px;
 }
-button{
+button {
   background:#d9b07e;
   border:none;
   color:white;
   font-weight:700;
-  padding:12px;
+  padding:10px 12px;
   border-radius:8px;
   cursor:pointer;
 }
-button:hover{background:#c69b6a;}
-#list{
-  margin-top:30px;
+button:hover { background:#c69b6a; }
+
+#tableContainer {
   width:90%;
-  max-width:500px;
+  max-width:900px;
+  margin-top:30px;
+  overflow-x:auto;
 }
-.item{
-  background:#fff6eb;
-  padding:10px 15px;
-  margin-bottom:8px;
-  border-radius:8px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.05);
-}
-img.preview{
+table {
   width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+  border-radius:8px;
+}
+th, td {
+  border-bottom:1px solid #eee;
+  padding:10px;
+  text-align:left;
+  font-size:14px;
+}
+th {
+  background:#f9f3eb;
+  color:#5c3b1e;
+}
+td img {
+  width:60px;
   border-radius:6px;
-  margin-top:8px;
+}
+td button {
+  margin-right:5px;
+  font-size:13px;
+  padding:5px 8px;
+}
+.editing input, .editing textarea {
+  border:1px solid #c69b6a;
+  background:#fffaf2;
 }
 </style>
 </head>
 <body>
-  <h1>🛠️ Jessy's world </h1>
+  <h1>🛠️ Jessy's World Admin</h1>
 
   <!-- Free Plan Notice -->
   <div class="notice">
-    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
-    You can only upload images up to <strong>1MB</strong>.  
-    <br>
+    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.<br>
+    You can only upload images up to <strong>1MB</strong>.<br>
     👉 <a href="https://leading-edge-v-i.vercel.app/" target="_blank">View or change your plan here</a>.
   </div>
 
+  <!-- Upload Form -->
   <form id="uploadForm">
     <input type="text" id="title" placeholder="Product Title" required>
     <input type="text" id="price" placeholder="Price (₦)" required>
     <textarea id="description" placeholder="Description" required></textarea>
     <input type="file" id="imgFile" accept="image/*" required>
-    <img id="preview" class="preview" style="display:none;">
+    <img id="preview" class="preview" style="display:none;max-width:100%;border-radius:6px;margin-top:8px;">
     <button type="submit">Upload Product</button>
   </form>
 
-  
+  <!-- Product Table -->
+  <div id="tableContainer">
+    <table>
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Price (₦)</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="productTable"></tbody>
+    </table>
+  </div>
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
@@ -123,9 +155,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const form = document.getElementById("uploadForm");
-const list = document.getElementById("list");
 const imgFile = document.getElementById("imgFile");
 const preview = document.getElementById("preview");
+const productTable = document.getElementById("productTable");
 
 // Show preview when selecting image
 imgFile.addEventListener("change", (e)=>{
@@ -136,6 +168,7 @@ imgFile.addEventListener("change", (e)=>{
   }
 });
 
+// Upload new product
 form.addEventListener("submit", async (e)=>{
   e.preventDefault();
   const title = document.getElementById("title").value.trim();
@@ -143,25 +176,24 @@ form.addEventListener("submit", async (e)=>{
   const description = document.getElementById("description").value.trim();
   const file = imgFile.files[0];
 
-  if(!file){alert("Please select an image.");return;}
+  if(!file){ alert("Please select an image."); return; }
 
-  // Check Free Plan file size (1MB max)
+  // Free plan size check
   if(file.size > 1 * 1024 * 1024){
-    alert("❌ Free plan limit reached. Please upload images smaller than 1MB or upgrade your plan.");
+    alert("❌ Image too large! Upload below 1MB or upgrade plan.");
     return;
   }
 
   const fileName = Date.now() + "_" + file.name.replace(/\s/g, "_");
   const { data: imgData, error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
-
-  if(imgError){alert("❌ Image upload failed: " + imgError.message);return;}
+  if(imgError){ alert("❌ Upload failed: " + imgError.message); return; }
 
   const { data: publicUrl } = supabase.storage.from("product-images").getPublicUrl(fileName);
   const img_url = publicUrl.publicUrl;
 
-  const { data, error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
-  if(error){alert("❌ Upload failed: "+error.message);}
-  else{
+  const { error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
+  if(error){ alert("❌ Upload failed: " + error.message); }
+  else {
     alert("✅ Product uploaded!");
     form.reset();
     preview.style.display="none";
@@ -169,17 +201,70 @@ form.addEventListener("submit", async (e)=>{
   }
 });
 
+// Fetch and display products
 async function fetchProducts(){
   const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
-  if(error){console.error(error);return;}
-  list.innerHTML = data.map(p=>`
-    <div class="item">
-      <b>${p.title}</b> – ${p.price}<br>
-      <small>${p.description}</small><br>
-      <img src="${p.img_url}" width="100%" style="margin-top:8px;border-radius:6px;">
-    </div>`).join("");
+  if(error){ console.error(error); return; }
+  renderTable(data);
 }
 fetchProducts();
+
+// Render product table
+function renderTable(products){
+  productTable.innerHTML = products.map(p => `
+    <tr data-id="${p.id}">
+      <td><img src="${p.img_url}" alt="${p.title}"></td>
+      <td><input type="text" value="${p.title}" disabled></td>
+      <td><input type="text" value="${p.price}" disabled></td>
+      <td><textarea disabled>${p.description}</textarea></td>
+      <td>
+        <button class="editBtn">Edit</button>
+        <button class="saveBtn" style="display:none;">Save</button>
+        <button class="deleteBtn" style="background:#c55;">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+
+  // Add functionality
+  document.querySelectorAll(".editBtn").forEach(btn=>{
+    btn.onclick = (e)=>{
+      const row = e.target.closest("tr");
+      row.classList.add("editing");
+      row.querySelectorAll("input,textarea").forEach(f=>f.disabled=false);
+      row.querySelector(".saveBtn").style.display="inline-block";
+      e.target.style.display="none";
+    };
+  });
+
+  document.querySelectorAll(".saveBtn").forEach(btn=>{
+    btn.onclick = async (e)=>{
+      const row = e.target.closest("tr");
+      const id = row.dataset.id;
+      const title = row.querySelector("input[type='text']").value;
+      const price = row.querySelectorAll("input[type='text']")[1].value;
+      const description = row.querySelector("textarea").value;
+
+      const { error } = await supabase.from("products").update({ title, price, description }).eq("id", id);
+      if(error){ alert("❌ Update failed: " + error.message); return; }
+      alert("✅ Product updated!");
+      row.classList.remove("editing");
+      row.querySelectorAll("input,textarea").forEach(f=>f.disabled=true);
+      row.querySelector(".editBtn").style.display="inline-block";
+      e.target.style.display="none";
+    };
+  });
+
+  document.querySelectorAll(".deleteBtn").forEach(btn=>{
+    btn.onclick = async (e)=>{
+      if(!confirm("🗑️ Delete this product?")) return;
+      const id = e.target.closest("tr").dataset.id;
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if(error){ alert("❌ Delete failed: " + error.message); return; }
+      alert("✅ Product deleted!");
+      fetchProducts();
+    };
+  });
+}
 </script>
 </body>
 </html>
