@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Jessy's World– Product Catalog</title>
+<title>Jessy's World – Product Catalog</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -74,6 +74,32 @@ header {
   flex:1;
   font-size:15px;
 }
+
+/* === Naira Price Input === */
+.price-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.price-input::before {
+  content: "₦";
+  position: absolute;
+  left: 12px;
+  color: var(--milk-accent);
+  font-weight: 600;
+  font-size: 15px;
+}
+.price-input input {
+  width: 100%;
+  padding-left: 28px; /* add space for ₦ symbol */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  height: 40px;
+  outline: none;
+}
+
+/* === Catalog & Cards === */
 .catalog {
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -213,6 +239,14 @@ footer span {
   <h2 style="font-size:18px;">Jessy's world</h2>
 </header>
 
+<!-- Example Naira Input -->
+<div style="width:100%;max-width:400px;margin:10px auto;">
+  <label for="price" style="display:block;font-weight:600;margin-bottom:4px;">Price</label>
+  <div class="price-input">
+    <input id="price" type="text" placeholder="Enter amount">
+  </div>
+</div>
+
 <div class="search">
   <input id="q" placeholder="Search products...">
 </div>
@@ -239,7 +273,6 @@ footer span {
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
-
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const catalog = document.getElementById("catalog");
@@ -295,7 +328,7 @@ function render(list){
       <img src="${p.img_url}" alt="${p.title}">
       <div class="card-body">
         <h3>${p.title}</h3>
-        <div class="price">${p.price}</div>
+        <div class="price">₦${p.price}</div>
         <p class="desc">${p.description}</p>
         <button class="btn">View</button>
       </div>`;
@@ -308,7 +341,7 @@ function openModal(p){
   active=p;
   mdImg.src=p.img_url;
   mdTitle.textContent=p.title;
-  mdPrice.textContent=p.price;
+  mdPrice.textContent="₦"+p.price;
   mdDesc.textContent=p.description;
   backdrop.style.display="flex";
 }
@@ -319,8 +352,8 @@ backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
 // WhatsApp redirect with product name
 whatsapp.onclick=()=>{
   if(!active) return;
-  const num="2348012345678"; // replace with your number
-  const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from MilkMarket.`);
+  const num="2349016501345"; // your actual number
+  const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from Jessy's World.`);
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
