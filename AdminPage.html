@@ -1,4 +1,5 @@
-<!doctype html>
+
+ <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -9,196 +10,196 @@
 
 <style>
 body {
-  font-family: 'Inter', sans-serif;
-  background: #fffdf8;
-  color: #222;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: 'Inter', sans-serif;
+  background: #fffdf8;
+  color: #222;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 h1 {
-  background: #d9b07e;
-  color: #fff;
-  width: 100%;
-  text-align: center;
-  padding: 20px 0;
-  margin-bottom: 10px;
+  background: #d9b07e;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 10px;
 }
 
 /* Notice styling */
 .notice {
-  background: #fff3e0;
-  border-left: 5px solid #d9b07e;
-  color: #5c3b1e;
-  padding: 12px 16px;
-  border-radius: 6px;
-  width: 90%;
-  max-width: 500px;
-  margin-bottom: 20px;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  background: #fff3e0;
+  border-left: 5px solid #d9b07e;
+  color: #5c3b1e;
+  padding: 12px 16px;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 500px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 .notice a {
-  color: #c68642;
-  font-weight: 600;
-  text-decoration: none;
+  color: #c68642;
+  font-weight: 600;
+  text-decoration: none;
 }
 .notice a:hover {
-  text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Form */
 form {
-  background: #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 400px;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 input, textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 15px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
 }
 button {
-  background: #d9b07e;
-  border: none;
-  color: white;
-  font-weight: 700;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  background: #d9b07e;
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 button:hover {
-  background: #c69b6a;
+  background: #c69b6a;
 }
 
 /* Table */
 .table-container {
-  margin-top: 30px;
-  width: 95%;
-  overflow-x: auto;
+  margin-top: 30px;
+  width: 95%;
+  overflow-x: auto;
 }
 table {
-  border-collapse: collapse;
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  overflow: hidden;
+  border-collapse: collapse;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
 }
 th, td {
-  padding: 12px 10px;
-  text-align: left;
-  font-size: 14px;
-  border-bottom: 1px solid #f0e6d8;
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #f0e6d8;
 }
 th {
-  background: #d9b07e;
-  color: #fff;
+  background: #d9b07e;
+  color: #fff;
 }
 td img {
-  width: 60px;
-  border-radius: 6px;
+  width: 60px;
+  border-radius: 6px;
 }
 .action-btn {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-right: 5px;
-  transition: all 0.3s ease;
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: all 0.3s ease;
 }
 .edit-btn {
-  background: #4caf50;
-  color: white;
+  background: #4caf50;
+  color: white;
 }
 .edit-btn:hover { background: #43a047; }
 .save-btn {
-  background: #2196f3;
-  color: white;
+  background: #2196f3;
+  color: white;
 }
 .save-btn:hover { background: #1976d2; }
 .delete-btn {
-  background: #f44336;
-  color: white;
+  background: #f44336;
+  color: white;
 }
 .delete-btn:hover { background: #d32f2f; }
 
 /* Mobile adjustments */
 @media (max-width: 600px) {
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
-  tr {
-    margin-bottom: 12px;
-    border: 1px solid #f0e6d8;
-    border-radius: 8px;
-    padding: 10px;
-  }
-  th {
-    display: none;
-  }
-  td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: none;
-    padding: 6px 0;
-  }
-  td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #5c3b1e;
-  }
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  tr {
+    margin-bottom: 12px;
+    border: 1px solid #f0e6d8;
+    border-radius: 8px;
+    padding: 10px;
+  }
+  th {
+    display: none;
+  }
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    padding: 6px 0;
+  }
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #5c3b1e;
+  }
 }
 </style>
 </head>
 
 <body>
-  <h1>🛠️ Jessy's world</h1>
+  <h1>🛠️ Jessy's world</h1>
 
-  <div class="notice">
-    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
-    You can only upload images up to <strong>2MB</strong>.  
-    <br>
-    👉 <a href="https://leading-edge-v-i.vercel.app/" target="_blank">View or change your plan here</a>.
-  </div>
+  <div class="notice">
+    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
+    You can only upload images up to <strong>2MB</strong>.  
+    <br>
+    👉 <a href="https://leading-edge-v-i.vercel.app/" target="_blank">View or change your plan here</a>.
+  </div>
 
-  <form id="uploadForm">
-    <input type="text" id="title" placeholder="Product Title" required>
-    <input type="text" id="price" placeholder="Price (₦)" pattern="[0-9A-Za-z₦$+\-., ]*" required>
-    <textarea id="description" placeholder="Description" required></textarea>
-    <input type="file" id="imgFile" accept="image/*" required>
-    <img id="preview" class="preview" style="display:none;width:100%;border-radius:6px;margin-top:8px;">
-    <button type="submit">Upload Product</button>
-  </form>
+  <form id="uploadForm">
+    <input type="text" id="title" placeholder="Product Title" required>
+    <input type="text" id="price" placeholder="Price (₦)" required>
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="file" id="imgFile" accept="image/*" required>
+    <img id="preview" class="preview" style="display:none;width:100%;border-radius:6px;margin-top:8px;">
+    <button type="submit">Upload Product</button>
+  </form>
 
-  <div class="table-container">
-    <table id="productTable">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Title</th>
-          <th>Price (₦)</th>
-          <th>Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+  <div class="table-container">
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Price (₦)</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
@@ -212,79 +213,81 @@ const imgFile = document.getElementById("imgFile");
 
 // Show image preview
 imgFile.addEventListener("change", (e)=>{
-  const file = e.target.files[0];
-  if(file){
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-  }
+  const file = e.target.files[0];
+  if(file){
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
 });
 
 form.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const title = document.getElementById("title").value.trim();
-  const price = document.getElementById("price").value.trim();
-  const description = document.getElementById("description").value.trim();
-  const file = imgFile.files[0];
+  e.preventDefault();
+  const title = document.getElementById("title").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const file = imgFile.files[0];
 
-  if(!file){ alert("Please select an image."); return; }
-  if(file.size > 2 * 1024 * 1024){
-    alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
-    return;
-  }
+  if(!file){ alert("Please select an image."); return; }
+  if(file.size > 2 * 1024 * 1024){
+    alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
+    return;
+  }
 
-  const fileName = Date.now() + "_" + file.name.replace(/\s/g, "_");
-  const { error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
-  if(imgError){ alert("❌ Image upload failed: " + imgError.message); return; }
+  const fileName = Date.now() + "_" + file.name.replace(/\s/g, "_");
+  const { error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
+  if(imgError){ alert("❌ Image upload failed: " + imgError.message); return; }
 
-  const { data: publicUrl } = supabase.storage.from("product-images").getPublicUrl(fileName);
-  const img_url = publicUrl.publicUrl;
+  const { data: publicUrl } = supabase.storage.from("product-images").getPublicUrl(fileName);
+  const img_url = publicUrl.publicUrl;
 
-  const { error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
-  if(error){ alert("❌ Upload failed: " + error.message); }
-  else{
-    alert("✅ Product uploaded!");
-    form.reset();
-    preview.style.display="none";
-    fetchProducts();
-  }
+  const { error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
+  if(error){ alert("❌ Upload failed: " + error.message); }
+  else{
+    alert("✅ Product uploaded!");
+    form.reset();
+    preview.style.display="none";
+    fetchProducts();
+  }
 });
 
 async function fetchProducts(){
-  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
-  if(error){ console.error(error); return; }
+  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
+  if(error){ console.error(error); return; }
 
-  tableBody.innerHTML = data.map(p => `
-    <tr>
-      <td data-label="Image"><img src="${p.img_url}" alt="${p.title}"></td>
-      <td data-label="Title"><input class="edit-input" data-id="${p.id}" data-field="title" value="${p.title}"></td>
-      <td data-label="Price"><input type="text" class="edit-input" data-id="${p.id}" data-field="price" pattern="[0-9A-Za-z₦$+\-., ]*" value="${p.price}"></td>
-      <td data-label="Description"><textarea class="edit-input" data-id="${p.id}" data-field="description">${p.description}</textarea></td>
-      <td data-label="Actions">
-        <button class="action-btn save-btn" onclick="saveEdit(${p.id})">Save</button>
-        <button class="action-btn delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
-      </td>
-    </tr>`).join("");
+  tableBody.innerHTML = data.map(p => `
+    <tr>
+      <td data-label="Image"><img src="${p.img_url}" alt="${p.title}"></td>
+      <td data-label="Title"><input class="edit-input" data-id="${p.id}" data-field="title" value="${p.title}"></td>
+      <td data-label="Price"><input class="edit-input" data-id="${p.id}" data-field="price" value="${p.price}"></td>
+      <td data-label="Description"><textarea class="edit-input" data-id="${p.id}" data-field="description">${p.description}</textarea></td>
+      <td data-label="Actions">
+        <button class="action-btn save-btn" onclick="saveEdit(${p.id})">Save</button>
+        <button class="action-btn delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+      </td>
+    </tr>`).join("");
 }
 
 async function saveEdit(id){
-  const inputs = document.querySelectorAll(\`.edit-input[data-id='\${id}']\`);
-  const updated = {};
-  inputs.forEach(i => updated[i.dataset.field] = i.value);
+  const inputs = document.querySelectorAll(`.edit-input[data-id='${id}']`);
+  const updated = {};
+  inputs.forEach(i => updated[i.dataset.field] = i.value);
 
-  const { error } = await supabase.from("products").update(updated).eq("id", id);
-  if(error){ alert("❌ Update failed: " + error.message); }
-  else alert("✅ Product updated!");
+  const { error } = await supabase.from("products").update(updated).eq("id", id);
+  if(error){ alert("❌ Update failed: " + error.message); }
+  else alert("✅ Product updated!");
 }
 
 async function deleteProduct(id){
-  if(confirm("Are you sure you want to delete this product?")){
-    const { error } = await supabase.from("products").delete().eq("id", id);
-    if(error){ alert("❌ Delete failed: " + error.message); }
-    else{
-      alert("🗑️ Product deleted!");
-      fetchProducts();
-    }
-  }
+  if(confirm("Are you sure you want to delete th
+
+is product?")){
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if(error){ alert("❌ Delete failed: " + error.message); }
+    else{
+      alert("🗑️ Product deleted!");
+      fetchProducts();
+    }
+  }
 }
 
 fetchProducts();
