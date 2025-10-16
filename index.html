@@ -57,16 +57,26 @@ header {
   padding:10px 14px;
   border-radius:10px;
 }
+
+/* === Search + Results === */
 .search {
   width:100%;
   margin:10px 0;
   display:flex;
-  align-items:center;
+  flex-direction:column;
+  gap:6px;
+  align-items:flex-start;
   background:#fff;
   border:1px solid #eee;
   border-radius:10px;
   padding:8px 12px;
   box-shadow:0 4px 8px rgba(0,0,0,0.04);
+}
+.search-row {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 .search input {
   border:none;
@@ -74,29 +84,47 @@ header {
   flex:1;
   font-size:15px;
 }
+#resultsCount {
+  font-size:13px;
+  color:var(--muted);
+  padding-left:4px;
+}
 
-/* === Naira Price Input === */
-.price-input {
+/* === Banner Ad Box === */
+.banner-box {
   position: relative;
-  display: flex;
-  align-items: center;
+  margin: 12px 0 18px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  background: #fff;
+  display: none;
+  animation: fade .4s ease;
 }
-.price-input::before {
-  content: "₦";
-  position: absolute;
-  left: 12px;
-  color: var(--milk-accent);
-  font-weight: 600;
-  font-size: 15px;
-}
-.price-input input {
+.banner-box img {
   width: 100%;
-  padding-left: 28px; /* add space for ₦ symbol */
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  height: 40px;
-  outline: none;
+  height: auto;
+  display: block;
+}
+.banner-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  line-height: 22px;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.banner-close:hover {
+  background: rgba(255,255,255,1);
 }
 
 /* === Catalog & Cards === */
@@ -185,35 +213,13 @@ header {
 .fade {animation:fade .3s ease forwards;}
 @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 
-/* === Shimmer Placeholder === */
-.skeleton {
-  background: linear-gradient(90deg, #f0ebe1 25%, #fff8f1 37%, #f0ebe1 63%);
-  background-size: 400% 100%;
-  animation: shimmer 1.4s ease infinite;
-  border-radius: 8px;
+/* Empty state */
+.empty-msg {
+  text-align:center;
+  color:var(--muted);
+  padding:24px;
+  grid-column:1/-1;
 }
-@keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-.skeleton-card {
-  background: var(--milk-soft);
-  border-radius: var(--radius);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.05);
-  overflow: hidden;
-  height: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-}
-.skeleton-img {
-  height: 150px;
-  width: 100%;
-  border-radius: 8px;
-}
-.skeleton-text { height: 12px; width: 80%; }
-.skeleton-price { height: 10px; width: 40%; }
 
 /* === Footer === */
 footer {
@@ -236,14 +242,24 @@ footer span {
 
 <header>
   <div class="logo">JW</div>
-  <h2 style="font-size:18px;">Jessy's world</h2>
+  <h2 style="font-size:18px;">Jessy's World</h2>
 </header>
 
-<!-- Example Naira Input -->
-
-
+<!-- Search -->
 <div class="search">
-  <input id="q" placeholder="Search products...">
+  <div class="search-row">
+    <input id="q" placeholder="Search products by name, price or description...">
+  </div>
+  <div id="resultsCount">Showing all products</div>
+</div>
+
+<!-- Banner Ad -->
+<div class="banner-box" id="bannerBox">
+  <b>Ad</b>
+  <a href="https://x.com/safe_goals/status/1972048444429947306" target="_blank">
+    <img src="Ad.jpeg" alt="Banner Ad">
+  </a>
+  <button class="banner-close" id="bannerClose">×</button>
 </div>
 
 <div class="catalog" id="catalog"></div>
@@ -260,7 +276,6 @@ footer span {
   </div>
 </div>
 
-<!-- Footer -->
 <footer>
   Powered by <span>Leading Edge Virtual Insight (L.E.V.I)</span>
 </footer>
@@ -270,61 +285,53 @@ const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjbXNqY251eXJuZ3F4d3Jzd2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MjU2MjgsImV4cCI6MjA2NzIwMTYyOH0.dkjCo2bgDMf923VKESkyMLsULo7IhmsYb6r-4Dn6SRY';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const catalog = document.getElementById("catalog");
-const q = document.getElementById("q");
-const backdrop = document.getElementById("backdrop");
-const mdImg = document.getElementById("mdImg");
-const mdTitle = document.getElementById("mdTitle");
-const mdPrice = document.getElementById("mdPrice");
-const mdDesc = document.getElementById("mdDesc");
-const whatsapp = document.getElementById("whatsapp");
-const closeBtn = document.getElementById("close");
+const catalog=document.getElementById("catalog");
+const q=document.getElementById("q");
+const resultsCount=document.getElementById("resultsCount");
+const backdrop=document.getElementById("backdrop");
+const mdImg=document.getElementById("mdImg");
+const mdTitle=document.getElementById("mdTitle");
+const mdPrice=document.getElementById("mdPrice");
+const mdDesc=document.getElementById("mdDesc");
+const whatsapp=document.getElementById("whatsapp");
+const closeBtn=document.getElementById("close");
 
-let products = [];
-let active = null;
+let products=[];
+let active=null;
 
-function showSkeleton(){
-  catalog.innerHTML = "";
-  for(let i=0; i<4; i++){
-    catalog.innerHTML += `
-      <div class="skeleton-card">
-        <div class="skeleton skeleton-img"></div>
-        <div class="skeleton skeleton-text"></div>
-        <div class="skeleton skeleton-price"></div>
-        <div class="skeleton skeleton-text" style="width:60%;"></div>
-      </div>
-    `;
-  }
+// helper to normalize (for better search)
+function normalize(str){
+  return String(str||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 }
 
 async function fetchProducts(){
-  showSkeleton();
-  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
+  catalog.innerHTML="<p style='text-align:center;'>Loading...</p>";
+  const {data,error}=await supabase.from("products").select("*").order("id",{ascending:false});
   if(error){
-    console.error(error);
-    catalog.innerHTML = "<p style='color:red;text-align:center;'>Failed to load products.</p>";
+    catalog.innerHTML="<p style='color:red;text-align:center;'>Failed to load products.</p>";
     return;
   }
-  products = data;
+  products=data||[];
   render(products);
 }
-fetchProducts();
 
 function render(list){
-  catalog.innerHTML = "";
-  if(list.length === 0){
-    catalog.innerHTML = "<p style='text-align:center;'>No products found.</p>";
+  catalog.innerHTML="";
+  if(!list.length){
+    catalog.innerHTML="<div class='empty-msg'>No products found.</div>";
+    resultsCount.textContent="0 results found";
     return;
   }
+  resultsCount.textContent=`${list.length} result${list.length===1?'':'s'} found`;
   list.forEach(p=>{
-    const c = document.createElement("div");
-    c.className = "card fade";
-    c.innerHTML = `
+    const c=document.createElement("div");
+    c.className="card fade";
+    c.innerHTML=`
       <img src="${p.img_url}" alt="${p.title}">
       <div class="card-body">
         <h3>${p.title}</h3>
         <div class="price">₦${p.price}</div>
-        <p class="desc">${p.description}</p>
+        <p class="desc">${p.description||''}</p>
         <button class="btn">View</button>
       </div>`;
     c.querySelector(".btn").onclick=()=>openModal(p);
@@ -337,26 +344,38 @@ function openModal(p){
   mdImg.src=p.img_url;
   mdTitle.textContent=p.title;
   mdPrice.textContent="₦"+p.price;
-  mdDesc.textContent=p.description;
+  mdDesc.textContent=p.description||"";
   backdrop.style.display="flex";
 }
-
 closeBtn.onclick=()=>backdrop.style.display="none";
-backdrop.onclick=(e)=>{if(e.target===backdrop)backdrop.style.display="none";};
-
-// WhatsApp redirect with product name
+backdrop.onclick=e=>{if(e.target===backdrop)backdrop.style.display="none";};
 whatsapp.onclick=()=>{
-  if(!active) return;
-  const num="2348147976229"; // your actual number
-  const msg=encodeURIComponent(`I'd want to purchase the "${active.title}" from Jessy's World.`);
+  if(!active)return;
+  const num="2348147976229";
+  const msg=encodeURIComponent(`I'd like to purchase "${active.title}" from Jessy's World.`);
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
-// Search filter
-q.oninput=()=>{
-  const val=q.value.toLowerCase();
-  render(products.filter(p=>p.title.toLowerCase().includes(val)));
-};
+// Enhanced Search
+q.addEventListener("input",()=>{
+  const term=normalize(q.value);
+  if(!term){render(products);return;}
+  const filtered=products.filter(p=>{
+    const title=normalize(p.title);
+    const price=normalize(p.price);
+    const desc=normalize(p.description);
+    return title.includes(term)||price.includes(term)||desc.includes(term);
+  });
+  render(filtered);
+});
+
+// Banner logic
+const bannerBox=document.getElementById("bannerBox");
+const bannerClose=document.getElementById("bannerClose");
+window.addEventListener("load",()=>bannerBox.style.display="block");
+bannerClose.onclick=()=>bannerBox.style.display="none";
+
+fetchProducts();
 </script>
 </body>
 </html>
