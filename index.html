@@ -227,11 +227,21 @@ footer {
   text-align: center;
   font-size: 13px;
   color: var(--muted);
-  padding: 12px 0;
+  padding: 16px 0 10px;
 }
 footer span {
   color: var(--milk-accent);
   font-weight: 600;
+}
+footer a {
+  display:block;
+  margin-top:6px;
+  color: var(--milk-accent);
+  text-decoration:none;
+  font-weight:600;
+}
+footer a:hover {
+  text-decoration:underline;
 }
 </style>
 </head>
@@ -278,6 +288,7 @@ footer span {
 
 <footer>
   Powered by <span>Leading Edge Virtual Insight (L.E.V.I)</span>
+  <a href="https://wa.me/2349016501345?text=Hello%2C%20I%27d%20like%20to%20report%20an%20abuse%20from%20Jessy%27s%20World%20website." target="_blank">Report an abuse</a>
 </footer>
 
 <script>
@@ -299,7 +310,7 @@ const closeBtn=document.getElementById("close");
 let products=[];
 let active=null;
 
-// helper to normalize (for better search)
+// normalize
 function normalize(str){
   return String(str||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 }
@@ -352,11 +363,11 @@ backdrop.onclick=e=>{if(e.target===backdrop)backdrop.style.display="none";};
 whatsapp.onclick=()=>{
   if(!active)return;
   const num="2348147976229";
-  const msg=encodeURIComponent(`I'd like to purchase "${active.title}" from Jessy's World.`);
+  const msg=encodeURIComponent("Hello, I got redirected from the website. I'd like to purchase \""+active.title+"\" from Jessy's World.");
   window.open(`https://wa.me/${num}?text=${msg}`,'_blank');
 };
 
-// Enhanced Search
+// Search logic
 q.addEventListener("input",()=>{
   const term=normalize(q.value);
   if(!term){render(products);return;}
