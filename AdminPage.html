@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -27,8 +26,6 @@ h1 {
   padding: 20px 0;
   margin-bottom: 10px;
 }
-
-/* Notice styling */
 .notice {
   background: #fff3e0;
   border-left: 5px solid #d9b07e;
@@ -41,16 +38,9 @@ h1 {
   font-size: 14px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
-.notice a {
-  color: #c68642;
-  font-weight: 600;
-  text-decoration: none;
-}
-.notice a:hover {
-  text-decoration: underline;
-}
+.notice a { color: #c68642; font-weight: 600; text-decoration: none; }
+.notice a:hover { text-decoration: underline; }
 
-/* Form */
 form {
   background: #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -79,16 +69,9 @@ button {
   cursor: pointer;
   transition: background 0.3s ease;
 }
-button:hover {
-  background: #c69b6a;
-}
+button:hover { background: #c69b6a; }
 
-/* Table */
-.table-container {
-  margin-top: 30px;
-  width: 95%;
-  overflow-x: auto;
-}
+.table-container { margin-top: 30px; width: 95%; overflow-x: auto; }
 table {
   border-collapse: collapse;
   width: 100%;
@@ -103,14 +86,8 @@ th, td {
   font-size: 14px;
   border-bottom: 1px solid #f0e6d8;
 }
-th {
-  background: #d9b07e;
-  color: #fff;
-}
-td img {
-  width: 60px;
-  border-radius: 6px;
-}
+th { background: #d9b07e; color: #fff; }
+td img { width: 60px; border-radius: 6px; }
 .action-btn {
   display: inline-block;
   padding: 8px 14px;
@@ -121,36 +98,20 @@ td img {
   margin-right: 5px;
   transition: all 0.3s ease;
 }
-.edit-btn {
-  background: #4caf50;
-  color: white;
-}
-.edit-btn:hover { background: #43a047; }
-.save-btn {
-  background: #2196f3;
-  color: white;
-}
+.save-btn { background: #2196f3; color: white; }
 .save-btn:hover { background: #1976d2; }
-.delete-btn {
-  background: #f44336;
-  color: white;
-}
+.delete-btn { background: #f44336; color: white; }
 .delete-btn:hover { background: #d32f2f; }
 
-/* Mobile adjustments */
 @media (max-width: 600px) {
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
+  table, thead, tbody, th, td, tr { display: block; }
   tr {
     margin-bottom: 12px;
     border: 1px solid #f0e6d8;
     border-radius: 8px;
     padding: 10px;
   }
-  th {
-    display: none;
-  }
+  th { display: none; }
   td {
     display: flex;
     justify-content: space-between;
@@ -168,38 +129,37 @@ td img {
 </head>
 
 <body>
-  <h1>🛠️ Jessy's World Admin Panel</h1>
+<h1>🛠️ Jessy's World Admin Panel</h1>
 
-  <div class="notice">
-    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
-    You can only upload images up to <strong>2MB</strong>.  
-    <br>
-    👉 <a href="https://leading-edge-v-i.vercel.app/subscriptions.html" target="_blank">View or change your plan here</a>.
-  </div>
+<div class="notice">
+  <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.<br>
+  You can only upload images up to <strong>2MB</strong>.<br>
+  👉 <a href="https://leading-edge-v-i.vercel.app/subscriptions.html" target="_blank">View or change your plan here</a>.
+</div>
 
-  <form id="uploadForm">
-    <input type="text" id="title" placeholder="Product Title" required>
-    <input type="text" id="price" placeholder="Price (₦)" required>
-    <textarea id="description" placeholder="Description" required></textarea>
-    <input type="file" id="imgFile" accept="image/*" required>
-    <img id="preview" class="preview" style="display:none;width:100%;border-radius:6px;margin-top:8px;">
-    <button type="submit">Upload Product</button>
-  </form>
+<form id="uploadForm">
+  <input type="text" id="title" placeholder="Product Title" required>
+  <input type="text" id="price" placeholder="Price (₦)" required>
+  <textarea id="description" placeholder="Description" required></textarea>
+  <input type="file" id="imgFile" accept="image/*" required>
+  <img id="preview" style="display:none;width:100%;border-radius:6px;margin-top:8px;">
+  <button type="submit">Upload Product</button>
+</form>
 
-  <div class="table-container">
-    <table id="productTable">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Title</th>
-          <th>Price (₦)</th>
-          <th>Description</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+<div class="table-container">
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Price (₦)</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
 
 <script>
 const SUPABASE_URL = 'https://ccmsjcnuyrngqxwrswfe.supabase.co';
@@ -211,48 +171,50 @@ const preview = document.getElementById("preview");
 const tableBody = document.getElementById("tableBody");
 const imgFile = document.getElementById("imgFile");
 
-// Show image preview
-imgFile.addEventListener("change", (e)=>{
+// Preview image before upload
+imgFile.addEventListener("change", (e) => {
   const file = e.target.files[0];
-  if(file){
+  if (file) {
     preview.src = URL.createObjectURL(file);
     preview.style.display = "block";
   }
 });
 
-form.addEventListener("submit", async (e)=>{
+// Handle upload
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const title = document.getElementById("title").value.trim();
   const price = document.getElementById("price").value.trim();
   const description = document.getElementById("description").value.trim();
   const file = imgFile.files[0];
 
-  if(!file){ alert("Please select an image."); return; }
-  if(file.size > 2 * 1024 * 1024){
-    alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
-    return;
-  }
+  if (!file) return alert("Please select an image.");
+  if (file.size > 2 * 1024 * 1024)
+    return alert("❌ Free plan limit: images must be below 2MB.");
 
   const fileName = Date.now() + "_" + file.name.replace(/\s/g, "_");
-  const { error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
-  if(imgError){ alert("❌ Image upload failed: " + imgError.message); return; }
 
-  const { data: publicUrl } = supabase.storage.from("product-images").getPublicUrl(fileName);
-  const img_url = publicUrl.publicUrl;
+  const { error: imgError } = await supabase.storage.from("product-images").upload(fileName, file);
+  if (imgError) return alert("❌ Image upload failed: " + imgError.message);
+
+  const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(fileName);
+  const img_url = urlData.publicUrl;
 
   const { error } = await supabase.from("products").insert([{ title, price, description, img_url }]);
-  if(error){ alert("❌ Upload failed: " + error.message); }
-  else{
+  if (error) alert("❌ Upload failed: " + error.message);
+  else {
     alert("✅ Product uploaded!");
     form.reset();
-    preview.style.display="none";
-    fetchProducts();
+    preview.style.display = "none";
+    await fetchProducts();
   }
 });
 
-async function fetchProducts(){
-  const { data, error } = await supabase.from("products").select("*").order("id",{ascending:false});
-  if(error){ console.error(error); return; }
+// Fetch products
+async function fetchProducts() {
+  const { data, error } = await supabase.from("products").select("*").order("id", { ascending: false });
+  if (error) return console.error(error);
 
   tableBody.innerHTML = data.map(p => `
     <tr>
@@ -264,32 +226,35 @@ async function fetchProducts(){
         <button class="action-btn save-btn" onclick="saveEdit(${p.id})">Save</button>
         <button class="action-btn delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
       </td>
-    </tr>`).join("");
+    </tr>
+  `).join("");
 }
 
-async function saveEdit(id){
+// Save product edit
+async function saveEdit(id) {
   const inputs = document.querySelectorAll(`.edit-input[data-id='${id}']`);
   const updated = {};
   inputs.forEach(i => updated[i.dataset.field] = i.value);
 
   const { error } = await supabase.from("products").update(updated).eq("id", id);
-  if(error){ alert("❌ Update failed: " + error.message); }
+  if (error) alert("❌ Update failed: " + error.message);
   else alert("✅ Product updated!");
 }
 
-async function deleteProduct(id){
-  if(confirm("Are you sure you want to delete th
-is product?")){
+// Delete product
+async function deleteProduct(id) {
+  if (confirm("Are you sure you want to delete this product?")) {
     const { error } = await supabase.from("products").delete().eq("id", id);
-    if(error){ alert("❌ Delete failed: " + error.message); }
-    else{
+    if (error) alert("❌ Delete failed: " + error.message);
+    else {
       alert("🗑️ Product deleted!");
-      fetchProducts();
+      await fetchProducts();
     }
   }
 }
 
+// Load products initially
 fetchProducts();
 </script>
 </body>
-  </html>
+</html>
