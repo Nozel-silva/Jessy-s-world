@@ -170,9 +170,8 @@ td img {
   <h1>🛠️ Jessy's World Admin Panel</h1>
 
   <div class="notice">
-    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.  
-    You can only upload images up to <strong>2MB</strong>.  
-    <br>
+    <b>Notice:</b> You are currently on the <strong>Free Plan</strong>.<br>
+    You can only upload images up to <strong>2MB</strong>.<br>
     👉 <a href="https://leading-edge-v-i.vercel.app/subscriptions.html" target="_blank">View or change your plan here</a>.
   </div>
 
@@ -210,10 +209,16 @@ const preview = document.getElementById("preview");
 const tableBody = document.getElementById("tableBody");
 const imgFile = document.getElementById("imgFile");
 
-// Show image preview
+// Show image preview + validate size immediately
 imgFile.addEventListener("change", (e)=>{
   const file = e.target.files[0];
   if(file){
+    if(file.size > 2 * 1024 * 1024){
+      alert("❌ Image too large! Please select a file under 2MB.");
+      imgFile.value = ""; // reset file input
+      preview.style.display = "none";
+      return;
+    }
     preview.src = URL.createObjectURL(file);
     preview.style.display = "block";
   }
@@ -228,7 +233,7 @@ form.addEventListener("submit", async (e)=>{
 
   if(!file){ alert("Please select an image."); return; }
   if(file.size > 2 * 1024 * 1024){
-    alert("❌ Free plan limit reached. Please upload images smaller than 2MB or upgrade your plan.");
+    alert("❌ File exceeds 2MB limit. Please choose a smaller image.");
     return;
   }
 
@@ -267,7 +272,7 @@ async function fetchProducts(){
 }
 
 async function saveEdit(id){
-  const inputs = document.querySelectorAll(`.edit-input[data-id='${id}']`);
+  const inputs = document.querySelectorAll(\`.edit-input[data-id='\${id}']\`);
   const updated = {};
   inputs.forEach(i => updated[i.dataset.field] = i.value);
 
